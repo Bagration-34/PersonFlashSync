@@ -30,7 +30,7 @@ class Program
         FileInfo[] filesPC = dirPC.GetFiles();
         foreach (FileInfo file in filesPC)
         {
-            //if (dirUsbFlash)
+            if (dirUsbFlash.GetFiles(file.Name) == null)
         }
 
         Console.ReadLine();
