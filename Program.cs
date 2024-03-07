@@ -18,21 +18,34 @@ class Program
         // Вывести сведения об устройствах
         foreach (DriveInfo d in myDrives)
         {
+            if (!d.IsReady) continue;
             Console.WriteLine("Name: {0}", d.Name);
-            Console.WriteLine("HashCode: {0}", d.GetHashCode());
+            Console.WriteLine("VolumeLabel: {0}", d.VolumeLabel);
             Console.WriteLine();
-            if (d.GetHashCode() == 59941933) usbFlash = d;
+            if (d.VolumeLabel == "UN") usbFlash = d;
         }
 
         DirectoryInfo dirUsbFlash = new DirectoryInfo($@"{usbFlash.Name}test");
         DirectoryInfo dirPC = new DirectoryInfo($@"C:\test");
 
-        FileInfo[] filesPC = dirPC.GetFiles();
-        foreach (FileInfo file in filesPC)
-        {
-            if (dirUsbFlash.GetFiles(file.Name) == null)
-        }
+        ScanDirectoryAndCopyFiles(dirPC, dirUsbFlash);
+        
 
         Console.ReadLine();
+    }
+
+    static void ScanDirectoryAndCopyFiles(DirectoryInfo source, DirectoryInfo purpose)
+    {
+        string path = null;
+
+        // Для начала перебираем все файлы
+        FileInfo[] filesPC = source.GetFiles();
+        foreach (FileInfo file in filesPC)
+        {
+            if (File.Exists(@$"{purpose.FullName}{Path.DirectorySeparatorChar}{file.Name}"))
+            {
+
+            }
+        }
     }
 }
