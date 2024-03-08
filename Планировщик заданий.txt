@@ -1,0 +1,2 @@
+DeviceSetupManager/Admin
+Код события - 112
