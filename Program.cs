@@ -1,30 +1,51 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Text.Json;
+using System.Reflection;
+using System.Diagnostics;
+
+// Создавать папку Backup для сохранения старых версий
 
 namespace PersonFlashSync;
 
 class Program
 {
-    const string RootDirectory = "test";
-
     static void Main(string[] args)
     {
         Console.WriteLine("***** PERSON FLASH SYNC *****\n");
 
-        DriveInfo usbFlash;
-        do
+        Device[] devices = GetConfig().Devices.ToArray();
+        if (devices.Length == 0) return;
+        foreach (Device d in devices)
         {
-            Console.WriteLine("Drive search...");
-            usbFlash = IdentifyDrive();
-            if (usbFlash == null) Thread.Sleep(1000);
+            DeviceProcess(d);
+        }
+    }
 
-        } while (usbFlash == null);
+    static void DeviceProcess(Device device)
+    {
+        DriveInfo[] myDrives = DriveInfo.GetDrives();
+        DriveInfo usbDrive = null;
+
+        for (int i = 0; i < 10; i++)
+        {
+            Console.WriteLine(@$"Search {device.VolumeLabel}...");
+            foreach (DriveInfo d in myDrives)
+            {
+                if (!d.IsReady) continue;
+                if (d.VolumeLabel == device.VolumeLabel) usbDrive = d;
+            }
+            if (usbDrive != null) break;
+            Thread.Sleep(500);
+        }
+        if (usbDrive == null) return;
 
         Console.WriteLine("Drive is detected!\n");
 
-        DirectoryInfo dirPC = new DirectoryInfo($@"C:\{RootDirectory}");
-        DirectoryInfo dirUsbFlash = new DirectoryInfo($@"{usbFlash.Name}{RootDirectory}");
+        DirectoryInfo dirPC = new DirectoryInfo(device.dirOnPC);
+        if (!dirPC.Exists) dirPC.Create();
+        DirectoryInfo dirUsbFlash = new DirectoryInfo($@"{usbDrive.Name}{device.dirOnUsb}");
         if (!dirUsbFlash.Exists) dirUsbFlash.Create();
 
         Console.WriteLine("PC -> USB");
@@ -34,17 +55,13 @@ class Program
         Console.WriteLine("\nDone!");
     }
 
-    static DriveInfo IdentifyDrive()
+    static Config GetConfig()
     {
-        DriveInfo[] myDrives = DriveInfo.GetDrives();
-
-        // Вывести сведения об устройствах
-        foreach (DriveInfo d in myDrives)
+        using (FileStream fs = new FileStream("config.json", FileMode.Open))
         {
-            if (!d.IsReady) continue;
-            if (d.VolumeLabel == "UN") return d;
+            Config? config = JsonSerializer.Deserialize<Config>(fs);
+            return config;
         }
-        return null;
     }
 
     static void ScanDirectoryAndCopyFiles(DirectoryInfo source, DirectoryInfo destination)
