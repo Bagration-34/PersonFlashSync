@@ -1,0 +1,18 @@
+{
+    "Devices": [
+        {
+            "VolumeLabel": "UN",
+            "Direction": 2,     
+            "DirectoryPairs": [
+                {
+                    "dirOnPC": "C:\\test",
+                    "dirOnUsb": "\\test"
+                },
+                {
+                    "dirOnPC": "C:\\test2",
+                    "dirOnUsb": "\\test2"
+                }
+            ]
+        }
+    ]
+}
