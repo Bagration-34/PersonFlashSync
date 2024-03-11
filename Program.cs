@@ -41,15 +41,23 @@ class Program
 
         void DirectoryProcess(DirectoryPair directoryPair)
         {
-            DirectoryInfo dirPC = new DirectoryInfo(directoryPair.dirOnPC);
+            DirectoryInfo dirPC = new DirectoryInfo(directoryPair.DirOnPC);
             if (!dirPC.Exists) dirPC.Create();
-            DirectoryInfo dirUsbFlash = new DirectoryInfo($@"{usbDrive.Name}{directoryPair.dirOnUsb}");
+            DirectoryInfo dirUsbFlash = new DirectoryInfo($@"{usbDrive.Name}{directoryPair.DirOnUsb}");
             if (!dirUsbFlash.Exists) dirUsbFlash.Create();
 
             // PC -> USB
-            ScanDirectoryAndCopyFiles(dirPC, dirUsbFlash);
+            if (directoryPair.Direction == Directions.bidirectional ||
+                directoryPair.Direction == Directions.PcToUsb)
+            {
+                ScanDirectoryAndCopyFiles(dirPC, dirUsbFlash);
+            }
             // USB -> PC
-            ScanDirectoryAndCopyFiles(dirUsbFlash, dirPC);
+            if (directoryPair.Direction == Directions.bidirectional ||
+                directoryPair.Direction == Directions.UsbToPc)
+            {
+                ScanDirectoryAndCopyFiles(dirUsbFlash, dirPC);
+            }
         }
     }
 

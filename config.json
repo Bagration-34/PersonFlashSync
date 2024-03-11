@@ -1,16 +1,16 @@
 {
     "Devices": [
         {
-            "VolumeLabel": "UN",
-            "Direction": 2,     
+            "VolumeLabel": "UN",    
             "DirectoryPairs": [
                 {
-                    "dirOnPC": "C:\\test",
-                    "dirOnUsb": "\\test"
+                    "DirOnPC": "C:\\test",
+                    "DirOnUsb": "\\test"
                 },
                 {
-                    "dirOnPC": "C:\\test2",
-                    "dirOnUsb": "\\test2"
+                    "Direction": 2,
+                    "DirOnPC": "C:\\test2",
+                    "DirOnUsb": "\\test2"
                 }
             ]
         }

@@ -12,14 +12,14 @@ namespace PersonFlashSync
     struct Device
     {
         public string VolumeLabel { get; set; }
-        public Directions Direction { get; set; }
         public DirectoryPair[] DirectoryPairs { get; set; }
     }
 
-    struct DirectoryPair
+    class DirectoryPair
     {
-        public string dirOnPC { get; set; }
-        public string dirOnUsb { get; set; }
+        public Directions Direction { get; set; } = Directions.bidirectional;
+        public string DirOnPC { get; set; }
+        public string DirOnUsb { get; set; }
     }
 
     enum Directions 
