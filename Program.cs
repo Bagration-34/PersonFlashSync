@@ -68,19 +68,20 @@ class Program
 
         // Для начала перебираем все файлы
         FileInfo[] sourceFiles = source.GetFiles();
-        foreach (FileInfo file in sourceFiles)
+        foreach (FileInfo sourcefile in sourceFiles)
         {
-            string destPath = @$"{destination.FullName}{Path.DirectorySeparatorChar}{file.Name}";
+            string destPath = @$"{destination.FullName}{Path.DirectorySeparatorChar}{sourcefile.Name}";
             if (File.Exists(destPath))
             {
-                if (file.LastWriteTime > File.GetLastWriteTime(destPath)) // Если у источника более новый 
+                // Из-за того, что при копировании с PC на USB устройство (FAT32) к времени изменения файла прибовляется примерно +2 секунды
+                if (sourcefile.LastWriteTime > File.GetLastWriteTime(destPath).AddSeconds(3)) // Если у источника более новый 
                 {
                     // Сохраняем старый файл и копируем с заменой
                     DirectoryInfo dirBackup = new DirectoryInfo(@$"{destination.FullName}{Path.DirectorySeparatorChar}backup");
                     if (!dirBackup.Exists) dirBackup.Create();
-                    File.Copy(destPath,  @$"{dirBackup.FullName}{Path.DirectorySeparatorChar}{file.Name}", true);  // Копируем старый файл в бэкап
-                    file.CopyTo(destPath, true);            // Перезаписываем
-                    File.SetLastWriteTime(destPath, file.LastAccessTime); // Меняем дату последнего изменения скопированного файла
+                    File.Copy(destPath,  @$"{dirBackup.FullName}{Path.DirectorySeparatorChar}{sourcefile.Name}", true);  // Копируем старый файл в бэкап
+                    sourcefile.CopyTo(destPath, true);            // Перезаписываем
+                    File.SetLastWriteTime(destPath, sourcefile.LastWriteTime);
                 }
                 else
                 {
@@ -89,7 +90,7 @@ class Program
             }
             else
             {
-                file.CopyTo(destPath); // Если ничего нет, копируем на устройство
+                sourcefile.CopyTo(destPath); // Если ничего нет, копируем на устройство
             }
         }
 
