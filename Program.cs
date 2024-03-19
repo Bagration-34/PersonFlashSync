@@ -42,9 +42,7 @@ class Program
         void DirectoryProcess(DirectoryPair directoryPair)
         {
             DirectoryInfo dirPC = new DirectoryInfo(directoryPair.DirOnPC);
-            if (!dirPC.Exists) dirPC.Create();
             DirectoryInfo dirUsbFlash = new DirectoryInfo($@"{usbDrive.Name}{directoryPair.DirOnUsb}");
-            if (!dirUsbFlash.Exists) dirUsbFlash.Create();
 
             // PC -> USB
             if (directoryPair.Direction == Directions.bidirectional ||
@@ -66,12 +64,18 @@ class Program
         using (FileStream fs = new FileStream("config.json", FileMode.Open))
         {
             Config config = JsonSerializer.Deserialize<Config>(fs);
+            Console.WriteLine(config.Devices[0].DirectoryPairs[0].DirOnPC);
             return config;
         }
     }
 
     static void ScanDirectoryAndCopyFiles(DirectoryInfo source, DirectoryInfo destination)
     {
+        if (!source.Exists) 
+        {
+            source.Create();
+            return;
+        }
         if (!destination.Exists) destination.Create();
 
         // Для начала перебираем все файлы
