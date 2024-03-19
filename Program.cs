@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading;
 using System.Text.Json;
 
+// В каждую синхронизируемую папку добавить конфиг
+
 namespace PersonFlashSync;
 
 class Program
@@ -14,7 +16,9 @@ class Program
         foreach (Device d in devices)
         {
             DeviceProcess(d);
+            ShowMessage($"Синхронизация с USB устройством {d.VolumeLabel} произведена");
         }
+
     }
 
     static void DeviceProcess(Device device)
@@ -45,14 +49,14 @@ class Program
             DirectoryInfo dirUsbFlash = new DirectoryInfo($@"{usbDrive.Name}{directoryPair.DirOnUsb}");
 
             // PC -> USB
-            if (directoryPair.Direction == Directions.bidirectional ||
-                directoryPair.Direction == Directions.PcToUsb)
+            if (directoryPair.Direction == (int)Directions.bidirectional ||
+                directoryPair.Direction == (int)Directions.PcToUsb)
             {
                 ScanDirectoryAndCopyFiles(dirPC, dirUsbFlash);
             }
             // USB -> PC
-            if (directoryPair.Direction == Directions.bidirectional ||
-                directoryPair.Direction == Directions.UsbToPc)
+            if (directoryPair.Direction == (int)Directions.bidirectional ||
+                directoryPair.Direction == (int)Directions.UsbToPc)
             {
                 ScanDirectoryAndCopyFiles(dirUsbFlash, dirPC);
             }
@@ -64,7 +68,6 @@ class Program
         using (FileStream fs = new FileStream("config.json", FileMode.Open))
         {
             Config config = JsonSerializer.Deserialize<Config>(fs);
-            Console.WriteLine(config.Devices[0].DirectoryPairs[0].DirOnPC);
             return config;
         }
     }
@@ -115,5 +118,10 @@ class Program
             DirectoryInfo subDir = new DirectoryInfo($@"{destination.FullName}{Path.DirectorySeparatorChar}{dir.Name}");
             ScanDirectoryAndCopyFiles(dir, subDir);
         }
+    }
+
+    static void ShowMessage(string msg)
+    {
+        //MessageBox.Show(msg);
     }
 }

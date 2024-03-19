@@ -17,7 +17,7 @@ namespace PersonFlashSync
 
     class DirectoryPair
     {
-        public Directions Direction { get; set; } = Directions.bidirectional;
+        public int Direction { get; set; } = 2;
         public string DirOnPC { get; set; }
         public string DirOnUsb { get; set; }
     }
