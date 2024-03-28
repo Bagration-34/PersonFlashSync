@@ -26,7 +26,7 @@ class Program
         DriveInfo[] myDrives = DriveInfo.GetDrives();
         DriveInfo usbDrive = null;
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 5; i++)
         {
             foreach (DriveInfo d in myDrives) // Поиск нужного устройства
             {
@@ -34,7 +34,7 @@ class Program
                 if (d.VolumeLabel == device.VolumeLabel) usbDrive = d;
             }
             if (usbDrive != null) break;
-            Thread.Sleep(500);
+            Thread.Sleep(200);
         }
         if (usbDrive == null) return;
 
